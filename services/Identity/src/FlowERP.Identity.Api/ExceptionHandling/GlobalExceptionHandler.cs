@@ -53,6 +53,13 @@ public sealed class GlobalExceptionHandler(
                 Detail = exception.Message
             },
 
+            UserRoleNotAssignedException => new ProblemDetails
+            {
+                Status = StatusCodes.Status404NotFound,
+                Title = "Role not assigned",
+                Detail = exception.Message
+            },
+
             InvalidCredentialsException => new ProblemDetails
             {
                 Status = StatusCodes.Status401Unauthorized,
