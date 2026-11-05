@@ -77,6 +77,7 @@ builder.Services.AddScoped<GetAllRolesService>();
 // Register user-role management use cases.
 builder.Services.AddScoped<AssignRoleService>();
 builder.Services.AddScoped<GetUserRolesService>();
+builder.Services.AddScoped<RemoveRoleService>();
 
 var app = builder.Build();
 
