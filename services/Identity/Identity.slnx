@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/FlowERP.Identity.Api/FlowERP.Identity.Api.csproj" />
+    <Project Path="src/FlowERP.Identity.Application/FlowERP.Identity.Application.csproj" />
+    <Project Path="src/FlowERP.Identity.Domain/FlowERP.Identity.Domain.csproj" />
+    <Project Path="src/FlowERP.Identity.Infrastructure/FlowERP.Identity.Infrastructure.csproj" />
+  </Folder>
+</Solution>
