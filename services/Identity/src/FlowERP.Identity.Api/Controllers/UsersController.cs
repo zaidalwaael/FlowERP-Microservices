@@ -16,7 +16,8 @@ namespace FlowERP.Identity.Api.Controllers;
 public sealed class UsersController(
     CreateUserService createUserService,
     AssignRoleService assignRoleService,
-    GetUserRolesService getUserRolesService) : ControllerBase
+    GetUserRolesService getUserRolesService,
+    RemoveRoleService removeRoleService) : ControllerBase
 {
     [HasPermission(PermissionNames.Users.Create)]
     [HttpPost]
@@ -75,6 +76,16 @@ public sealed class UsersController(
             cancellationToken);
 
         // Return 204 when the role is assigned successfully.
+        return NoContent();
+    }
+
+    [HttpDelete("{userId:guid}/roles/{roleId:guid}")]
+    [HasPermission(PermissionNames.Roles.Assign)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> RemoveRole(Guid userId, Guid roleId, CancellationToken cancellationToken)
+    {
+        await removeRoleService.RemoveAsync(userId, roleId, cancellationToken);
         return NoContent();
     }
 
