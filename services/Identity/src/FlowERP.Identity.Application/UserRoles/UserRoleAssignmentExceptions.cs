@@ -26,3 +26,9 @@ public sealed class UserRoleAlreadyAssignedException : Exception
     {
     }
 }
+
+public sealed class UserRoleNotAssignedException : Exception
+{
+    public UserRoleNotAssignedException()
+        : base("The specified role is not assigned to this user.") { }
+}
