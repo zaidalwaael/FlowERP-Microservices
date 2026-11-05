@@ -51,4 +51,16 @@ public sealed class UserRoleRepository(
         .AsNoTracking()
         .ToListAsync(cancellationToken);
     }
+    // Track an existing user-role assignment for deletion.
+    public async Task<bool> RemoveAsync(Guid userId, Guid roleId, CancellationToken cancellationToken = default)
+    {
+        var assignment = await dbContext.UserRoles
+            .FirstOrDefaultAsync(x => x.UserId == userId && x.RoleId == roleId, cancellationToken);
+
+        if (assignment is null)
+            return false;
+
+        dbContext.UserRoles.Remove(assignment);
+        return true;
+    }
 }
