@@ -17,8 +17,29 @@ public sealed class UsersController(
     CreateUserService createUserService,
     AssignRoleService assignRoleService,
     GetUserRolesService getUserRolesService,
-    RemoveRoleService removeRoleService) : ControllerBase
+    RemoveRoleService removeRoleService,
+    ManageUsersService manageUsersService) : ControllerBase
 {
+    [HttpGet]
+    [HasPermission(PermissionNames.Users.Read)]
+    public async Task<ActionResult<IReadOnlyList<UserResponseDto>>> GetAll(CancellationToken ct) =>
+        Ok(await manageUsersService.GetAllAsync(ct));
+
+    [HttpGet("{userId:guid}")]
+    [HasPermission(PermissionNames.Users.Read)]
+    public async Task<ActionResult<UserResponseDto>> GetById(Guid userId,CancellationToken ct) =>
+        Ok(await manageUsersService.GetAsync(userId,ct));
+
+    [HttpPut("{userId:guid}/email")]
+    [HasPermission(PermissionNames.Users.Update)]
+    public async Task<ActionResult<UserResponseDto>> UpdateEmail(Guid userId,UpdateUserEmailRequest request,CancellationToken ct) =>
+        Ok(await manageUsersService.UpdateEmailAsync(userId,request.Email,ct));
+
+    [HttpPatch("{userId:guid}/status")]
+    [HasPermission(PermissionNames.Users.Deactivate)]
+    public async Task<ActionResult<UserResponseDto>> SetStatus(Guid userId,SetUserActiveRequest request,CancellationToken ct) =>
+        Ok(await manageUsersService.SetActiveAsync(userId,request.IsActive,ct));
+
     [HasPermission(PermissionNames.Users.Create)]
     [HttpPost]
     [ProducesResponseType(typeof(Guid), StatusCodes.Status201Created)]

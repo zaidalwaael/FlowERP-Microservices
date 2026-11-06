@@ -65,6 +65,7 @@ builder.Services.AddScoped<
 
 // Register application use cases.
 builder.Services.AddScoped<CreateUserService>();
+builder.Services.AddScoped<ManageUsersService>();
 builder.Services.AddScoped<LoginService>();
 builder.Services.AddScoped<RefreshTokenService>();
 builder.Services.AddScoped<LogoutService>();

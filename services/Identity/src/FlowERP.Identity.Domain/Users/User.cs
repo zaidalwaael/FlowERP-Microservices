@@ -40,6 +40,15 @@ public sealed class User
     public bool IsActive { get; private set; }
     public DateTime CreatedAtUtc { get; private set; }
 
+    public void ChangeEmail(string email)
+    {
+        if (string.IsNullOrWhiteSpace(email) || email.Trim().Length > 256)
+            throw new ArgumentException("Valid email is required.", nameof(email));
+        Email = email.Trim().ToLowerInvariant();
+    }
+
+    public void Activate() => IsActive = true;
+
     public void Deactivate()
     {
         IsActive = false;
