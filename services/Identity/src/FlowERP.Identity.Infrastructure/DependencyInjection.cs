@@ -3,6 +3,7 @@ using FlowERP.Identity.Application;
 using FlowERP.Identity.Application.Authentication;
 using FlowERP.Identity.Application.Authorization;
 using FlowERP.Identity.Application.Roles;
+using FlowERP.Identity.Application.RolePermissions;
 using FlowERP.Identity.Application.UserRoles;
 using FlowERP.Identity.Application.Users;
 using FlowERP.Identity.Infrastructure.Authentication;
@@ -49,6 +50,8 @@ public static class DependencyInjection
         services.AddScoped<
             IRoleRepository,
             RoleRepository>();
+
+        services.AddScoped<IRolePermissionRepository, RolePermissionRepository>();
 
         // Register user-role assignment persistence.
         services.AddScoped<
