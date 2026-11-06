@@ -17,7 +17,8 @@ public sealed class UsersController(
     CreateUserService createUserService,
     AssignRoleService assignRoleService,
     GetUserRolesService getUserRolesService,
-    RemoveRoleService removeRoleService) : ControllerBase
+    RemoveRoleService removeRoleService,
+    GetUserPermissionsService getUserPermissionsService) : ControllerBase
 {
     [HasPermission(PermissionNames.Users.Create)]
     [HttpPost]
@@ -55,6 +56,12 @@ public sealed class UsersController(
             Email = email
         });
     }
+
+    [HttpGet("{userId:guid}/permissions")]
+    [HasPermission(PermissionNames.Permissions.Read)]
+    [ProducesResponseType(typeof(IReadOnlyCollection<string>),StatusCodes.Status200OK)]
+    public async Task<ActionResult<IReadOnlyCollection<string>>> GetPermissions(Guid userId,CancellationToken ct) =>
+        Ok(await getUserPermissionsService.GetAsync(userId,ct));
 
     [HttpPost("{userId:guid}/roles/{roleId:guid}")]
     [HasPermission(PermissionNames.Roles.Assign)]
