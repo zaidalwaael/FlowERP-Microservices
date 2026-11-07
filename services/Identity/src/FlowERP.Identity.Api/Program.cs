@@ -2,7 +2,9 @@
 using FlowERP.Identity.Api.Authorization;
 using FlowERP.Identity.Api.ExceptionHandling;
 using FlowERP.Identity.Application.Authentication;
+using FlowERP.Identity.Application.Authorization;
 using FlowERP.Identity.Application.Roles;
+using FlowERP.Identity.Application.RolePermissions;
 using FlowERP.Identity.Application.UserRoles;
 using FlowERP.Identity.Application.Users;
 using FlowERP.Identity.Infrastructure;
@@ -74,11 +76,13 @@ builder.Services.AddScoped<LogoutService>();
 builder.Services.AddScoped<CreateRoleService>();
 builder.Services.AddScoped<GetRoleByIdService>();
 builder.Services.AddScoped<GetAllRolesService>();
+builder.Services.AddScoped<ManageRolePermissionsService>();
 
 // Register user-role management use cases.
 builder.Services.AddScoped<AssignRoleService>();
 builder.Services.AddScoped<GetUserRolesService>();
 builder.Services.AddScoped<RemoveRoleService>();
+builder.Services.AddScoped<GetUserPermissionsService>();
 
 var app = builder.Build();
 

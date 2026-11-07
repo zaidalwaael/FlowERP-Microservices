@@ -2,6 +2,7 @@
 using FlowERP.Identity.Api.Contracts.Roles;
 using FlowERP.Identity.Application.Authorization;
 using FlowERP.Identity.Application.Roles;
+using FlowERP.Identity.Application.RolePermissions;
 using FlowERP.Identity.Application.Roles.DTOs;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,8 +13,28 @@ namespace FlowERP.Identity.Api.Controllers;
 public sealed class RolesController(
     CreateRoleService createRoleService,
     GetRoleByIdService getRoleByIdService,
-    GetAllRolesService getAllRolesService) : ControllerBase
+    GetAllRolesService getAllRolesService,
+    ManageRolePermissionsService rolePermissions) : ControllerBase
 {
+    [HttpGet("{roleId:guid}/permissions")]
+    [HasPermission(PermissionNames.Roles.Read)]
+    public async Task<ActionResult<IReadOnlyList<PermissionResponseDto>>> GetPermissions(Guid roleId,CancellationToken ct) =>
+        Ok(await rolePermissions.GetAsync(roleId,ct));
+
+    [HttpPost("{roleId:guid}/permissions/{permissionId:guid}")]
+    [HasPermission(PermissionNames.Roles.ManagePermissions)]
+    public async Task<IActionResult> AssignPermission(Guid roleId,Guid permissionId,CancellationToken ct) {
+        await rolePermissions.AssignAsync(roleId,permissionId,ct);
+        return NoContent();
+    }
+
+    [HttpDelete("{roleId:guid}/permissions/{permissionId:guid}")]
+    [HasPermission(PermissionNames.Roles.ManagePermissions)]
+    public async Task<IActionResult> RemovePermission(Guid roleId,Guid permissionId,CancellationToken ct) {
+        await rolePermissions.RemoveAsync(roleId,permissionId,ct);
+        return NoContent();
+    }
+
     [HttpPost]
     [HasPermission(PermissionNames.Roles.Create)]
     [ProducesResponseType(typeof(Guid), StatusCodes.Status201Created)]
