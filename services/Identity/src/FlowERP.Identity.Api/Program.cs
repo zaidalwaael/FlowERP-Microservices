@@ -2,6 +2,7 @@
 using FlowERP.Identity.Api.Authorization;
 using FlowERP.Identity.Api.ExceptionHandling;
 using FlowERP.Identity.Application.Authentication;
+using FlowERP.Identity.Application.Authorization;
 using FlowERP.Identity.Application.Roles;
 using FlowERP.Identity.Application.RolePermissions;
 using FlowERP.Identity.Application.UserRoles;
@@ -80,6 +81,7 @@ builder.Services.AddScoped<ManageRolePermissionsService>();
 builder.Services.AddScoped<AssignRoleService>();
 builder.Services.AddScoped<GetUserRolesService>();
 builder.Services.AddScoped<RemoveRoleService>();
+builder.Services.AddScoped<GetUserPermissionsService>();
 
 var app = builder.Build();
 
