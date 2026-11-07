@@ -1,5 +1,6 @@
 ﻿using FlowERP.Identity.Application.Authentication;
 using FlowERP.Identity.Application.Roles;
+using FlowERP.Identity.Application.RolePermissions;
 using FlowERP.Identity.Application.UserRoles;
 using FlowERP.Identity.Application.Users;
 using Microsoft.AspNetCore.Diagnostics;
@@ -59,6 +60,10 @@ public sealed class GlobalExceptionHandler(
                 Title = "Role not assigned",
                 Detail = exception.Message
             },
+
+            PermissionNotFoundException => new ProblemDetails { Status = 404, Title = "Permission not found", Detail = exception.Message },
+            RolePermissionNotAssignedException => new ProblemDetails { Status = 404, Title = "Permission not assigned", Detail = exception.Message },
+            RolePermissionAlreadyAssignedException => new ProblemDetails { Status = 409, Title = "Permission already assigned", Detail = exception.Message },
 
             InvalidCredentialsException => new ProblemDetails
             {
