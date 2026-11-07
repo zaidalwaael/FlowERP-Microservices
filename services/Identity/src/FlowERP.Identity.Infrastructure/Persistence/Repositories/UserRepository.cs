@@ -7,6 +7,11 @@ namespace FlowERP.Identity.Infrastructure.Persistence.Repositories;
 public sealed class UserRepository(IdentityDbContext dbContext)
     : IUserRepository
 {
+    public async Task<IReadOnlyList<User>> GetAllAsync(CancellationToken cancellationToken = default)
+    {
+        return await dbContext.Users.AsNoTracking().OrderBy(x => x.Email).ToListAsync(cancellationToken);
+    }
+
     public Task<User?> GetByIdAsync(
         Guid userId,
         CancellationToken cancellationToken = default)
