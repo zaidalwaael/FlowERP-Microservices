@@ -1,5 +1,8 @@
-﻿using FlowERP.Identity.Api.Contracts.Auth;
+﻿
+using FlowERP.Identity.Api.Contracts.Auth;
 using FlowERP.Identity.Application.Authentication;
+using FlowERP.Identity.Application.PasswordResetTokens;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FlowERP.Identity.Api.Controllers;
@@ -9,7 +12,9 @@ namespace FlowERP.Identity.Api.Controllers;
 public sealed class AuthController(
     LoginService loginService,
     RefreshTokenService refreshTokenService,
-    LogoutService logoutService) : ControllerBase
+    LogoutService logoutService,
+    ForgotPasswordService forgotPasswordService,
+    ResetPasswordService resetPasswordService) : ControllerBase
 {
     [HttpPost("login")]
     [ProducesResponseType(
@@ -79,5 +84,43 @@ public sealed class AuthController(
             cancellationToken);
 
         return NoContent();
+    }
+
+    [HttpPost("reset-password")]
+    [AllowAnonymous]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> ResetPassword(
+        ResetPasswordRequest request,
+        CancellationToken cancellationToken)
+    {
+        await resetPasswordService.ResetAsync(
+            request.Token,
+            request.NewPassword,
+            cancellationToken);
+
+        return NoContent();
+    }
+
+    // Request a password reset link.
+    [HttpPost("forgot-password")]
+    [AllowAnonymous]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(
+        typeof(ValidationProblemDetails),
+        StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> ForgotPassword(
+        ForgotPasswordRequest request,
+        CancellationToken cancellationToken)
+    {
+        await forgotPasswordService.RequestResetAsync(
+            request.Email,
+            cancellationToken);
+
+        return Ok(new
+        {
+            Message =
+                "If the account exists, a password reset link will be sent."
+        });
     }
 }

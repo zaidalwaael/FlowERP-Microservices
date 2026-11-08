@@ -2,11 +2,13 @@
 using FlowERP.Identity.Application;
 using FlowERP.Identity.Application.Authentication;
 using FlowERP.Identity.Application.Authorization;
+using FlowERP.Identity.Application.PasswordResetTokens;
 using FlowERP.Identity.Application.Roles;
 using FlowERP.Identity.Application.RolePermissions;
 using FlowERP.Identity.Application.UserRoles;
 using FlowERP.Identity.Application.Users;
 using FlowERP.Identity.Infrastructure.Authentication;
+using FlowERP.Identity.Infrastructure.Email;
 using FlowERP.Identity.Infrastructure.Persistence;
 using FlowERP.Identity.Infrastructure.Persistence.Repositories;
 using FlowERP.Identity.Infrastructure.Persistence.Seeding;
@@ -41,6 +43,11 @@ public static class DependencyInjection
             IRefreshTokenRepository,
             RefreshTokenRepository>();
 
+        // Register password reset token persistence.
+        services.AddScoped<
+            IPasswordResetTokenRepository,
+            PasswordResetTokenRepository>();
+
         // Register the repository for loading user roles and permissions.
         services.AddScoped<
             IUserAuthorizationRepository,
@@ -51,7 +58,9 @@ public static class DependencyInjection
             IRoleRepository,
             RoleRepository>();
 
-        services.AddScoped<IRolePermissionRepository, RolePermissionRepository>();
+        services.AddScoped<
+            IRolePermissionRepository,
+            RolePermissionRepository>();
 
         // Register user-role assignment persistence.
         services.AddScoped<
@@ -62,14 +71,33 @@ public static class DependencyInjection
         services.AddScoped<IUnitOfWork>(provider =>
             provider.GetRequiredService<IdentityDbContext>());
 
-        // Register the password hashing implementation and its options.
+        // Register password hashing.
         services.AddOptions<PasswordHasherOptions>();
 
         services.AddScoped<
             IPasswordHasher,
             IdentityPasswordHasher>();
 
-        // Bind the "Jwt" configuration section to JwtOptions.
+        // Register the password reset token generator.
+        services.AddScoped<
+            IPasswordResetTokenGenerator,
+            PasswordResetTokenGenerator>();
+
+        // Configure SMTP settings.
+        services.Configure<SmtpOptions>(
+            configuration.GetSection(SmtpOptions.SectionName));
+
+        services.Configure<PasswordResetOptions>(
+            configuration.GetSection(PasswordResetOptions.SectionName));
+
+
+
+        // Register the password reset email sender.
+        services.AddScoped<
+            IPasswordResetEmailSender,
+            SmtpEmailSender>();
+
+        // Configure JWT settings.
         services.Configure<JwtOptions>(
             configuration.GetSection(JwtOptions.SectionName));
 
@@ -118,7 +146,7 @@ public static class DependencyInjection
                     };
             });
 
-        // Register authorization without static permission policies.
+        // Register authorization.
         services.AddAuthorization();
 
         return services;
