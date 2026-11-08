@@ -1,6 +1,7 @@
 ﻿
 using FlowERP.Identity.Application;
 using FlowERP.Identity.Application.Roles;
+using FlowERP.Identity.Application.PasswordResetTokens;
 using FlowERP.Identity.Domain.PasswordResetTokens;
 using FlowERP.Identity.Domain.Permissions;
 using FlowERP.Identity.Domain.RefreshTokens;
@@ -53,6 +54,11 @@ public sealed class IdentityDbContext(
         try
         {
             return await base.SaveChangesAsync(cancellationToken);
+        }
+        catch (DbUpdateConcurrencyException exception)
+            when (exception.Entries.Any(entry => entry.Entity is PasswordResetToken))
+        {
+            throw new InvalidPasswordResetTokenException();
         }
         catch (DbUpdateException exception)
             when (IsDuplicateRoleName(exception))

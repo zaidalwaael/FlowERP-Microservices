@@ -1,5 +1,5 @@
 using FlowERP.Identity.Application.Users;
-using Microsoft.EntityFrameworkCore;
+using FlowERP.Identity.Application.Authentication;
 
 namespace FlowERP.Identity.Application.PasswordResetTokens;
 
@@ -8,6 +8,7 @@ public sealed class ResetPasswordService(
     IPasswordResetTokenGenerator tokenGenerator,
     IUserRepository userRepository,
     IPasswordHasher passwordHasher,
+    IRefreshTokenRepository refreshTokenRepository,
     IUnitOfWork unitOfWork)
 {
     public async Task ResetAsync(
@@ -52,14 +53,12 @@ public sealed class ResetPasswordService(
                 otherToken.MarkAsUsed();
         }
 
-        try
-        {
-            await unitOfWork.SaveChangesAsync(cancellationToken);
-        }
-        catch (DbUpdateConcurrencyException)
-        {
-            // Concurrent attempts to consume the same token must not succeed.
-            throw new InvalidPasswordResetTokenException();
-        }
+        // Revoke refresh tokens so existing sessions cannot be refreshed.
+        var refreshTokens = await refreshTokenRepository.GetActiveByUserIdAsync(
+            user.Id, cancellationToken);
+        foreach (var refreshToken in refreshTokens)
+            refreshToken.Revoke();
+
+        await unitOfWork.SaveChangesAsync(cancellationToken);
     }
 }
