@@ -1,6 +1,7 @@
 ﻿
 using FlowERP.Identity.Application;
 using FlowERP.Identity.Application.Roles;
+using FlowERP.Identity.Domain.PasswordResetTokens;
 using FlowERP.Identity.Domain.Permissions;
 using FlowERP.Identity.Domain.RefreshTokens;
 using FlowERP.Identity.Domain.RolePermissions;
@@ -21,6 +22,9 @@ public sealed class IdentityDbContext(
 
     public DbSet<RefreshToken> RefreshTokens =>
         Set<RefreshToken>();
+
+    public DbSet<PasswordResetToken> PasswordResetTokens =>
+        Set<PasswordResetToken>();
 
     public DbSet<Role> Roles =>
         Set<Role>();

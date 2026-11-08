@@ -1,4 +1,5 @@
-﻿namespace FlowERP.Identity.Domain.Users;
+﻿
+namespace FlowERP.Identity.Domain.Users;
 
 public sealed class User
 {
@@ -10,10 +11,14 @@ public sealed class User
     public User(Guid id, string email, string passwordHash)
     {
         if (id == Guid.Empty)
-            throw new ArgumentException("User ID is required.", nameof(id));
+            throw new ArgumentException(
+                "User ID is required.",
+                nameof(id));
 
         if (string.IsNullOrWhiteSpace(email))
-            throw new ArgumentException("Email is required.", nameof(email));
+            throw new ArgumentException(
+                "Email is required.",
+                nameof(email));
 
         var normalizedEmail = email.Trim().ToLowerInvariant();
 
@@ -35,19 +40,44 @@ public sealed class User
     }
 
     public Guid Id { get; private set; }
+
     public string Email { get; private set; } = string.Empty;
+
     public string PasswordHash { get; private set; } = string.Empty;
+
     public bool IsActive { get; private set; }
+
     public DateTime CreatedAtUtc { get; private set; }
 
     public void ChangeEmail(string email)
     {
-        if (string.IsNullOrWhiteSpace(email) || email.Trim().Length > 256)
-            throw new ArgumentException("Valid email is required.", nameof(email));
+        if (string.IsNullOrWhiteSpace(email) ||
+            email.Trim().Length > 256)
+        {
+            throw new ArgumentException(
+                "Valid email is required.",
+                nameof(email));
+        }
+
         Email = email.Trim().ToLowerInvariant();
     }
 
-    public void Activate() => IsActive = true;
+    public void ChangePassword(string newPasswordHash)
+    {
+        if (string.IsNullOrWhiteSpace(newPasswordHash))
+        {
+            throw new ArgumentException(
+                "Password hash is required.",
+                nameof(newPasswordHash));
+        }
+
+        PasswordHash = newPasswordHash;
+    }
+
+    public void Activate()
+    {
+        IsActive = true;
+    }
 
     public void Deactivate()
     {

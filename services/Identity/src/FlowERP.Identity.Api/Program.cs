@@ -3,8 +3,9 @@ using FlowERP.Identity.Api.Authorization;
 using FlowERP.Identity.Api.ExceptionHandling;
 using FlowERP.Identity.Application.Authentication;
 using FlowERP.Identity.Application.Authorization;
-using FlowERP.Identity.Application.Roles;
+using FlowERP.Identity.Application.PasswordResetTokens;
 using FlowERP.Identity.Application.RolePermissions;
+using FlowERP.Identity.Application.Roles;
 using FlowERP.Identity.Application.UserRoles;
 using FlowERP.Identity.Application.Users;
 using FlowERP.Identity.Infrastructure;
@@ -71,6 +72,8 @@ builder.Services.AddScoped<ManageUsersService>();
 builder.Services.AddScoped<LoginService>();
 builder.Services.AddScoped<RefreshTokenService>();
 builder.Services.AddScoped<LogoutService>();
+builder.Services.AddScoped<ForgotPasswordService>();
+
 
 // Register role management use cases.
 builder.Services.AddScoped<CreateRoleService>();
