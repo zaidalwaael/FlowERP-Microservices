@@ -18,6 +18,17 @@ public sealed class PasswordResetTokenRepository(
             cancellationToken);
     }
 
+    public async Task<IReadOnlyList<PasswordResetToken>> GetActiveByUserIdAsync(
+        Guid userId,
+        CancellationToken cancellationToken = default)
+    {
+        return await dbContext.PasswordResetTokens
+            .Where(token => token.UserId == userId &&
+                            token.UsedAtUtc == null &&
+                            token.ExpiresAtUtc > DateTime.UtcNow)
+            .ToListAsync(cancellationToken);
+    }
+
     public Task<PasswordResetToken?> GetByTokenHashAsync(
         string tokenHash,
         CancellationToken cancellationToken = default)

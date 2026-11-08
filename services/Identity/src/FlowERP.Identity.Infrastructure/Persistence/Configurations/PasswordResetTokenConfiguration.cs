@@ -30,7 +30,8 @@ public sealed class PasswordResetTokenConfiguration
             .IsRequired();
 
         builder.Property(x => x.UsedAtUtc)
-            .IsRequired(false);
+            .IsRequired(false)
+            .IsConcurrencyToken();
 
         builder.HasOne<User>()
             .WithMany()

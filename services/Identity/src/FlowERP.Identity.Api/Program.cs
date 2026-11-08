@@ -73,6 +73,7 @@ builder.Services.AddScoped<LoginService>();
 builder.Services.AddScoped<RefreshTokenService>();
 builder.Services.AddScoped<LogoutService>();
 builder.Services.AddScoped<ForgotPasswordService>();
+builder.Services.AddScoped<ResetPasswordService>();
 
 
 // Register role management use cases.

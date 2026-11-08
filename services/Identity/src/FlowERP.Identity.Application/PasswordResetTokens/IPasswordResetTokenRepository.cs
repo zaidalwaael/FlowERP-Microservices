@@ -9,6 +9,10 @@ public interface IPasswordResetTokenRepository
         PasswordResetToken token,
         CancellationToken cancellationToken = default);
 
+    Task<IReadOnlyList<PasswordResetToken>> GetActiveByUserIdAsync(
+        Guid userId,
+        CancellationToken cancellationToken = default);
+
     Task<PasswordResetToken?> GetByTokenHashAsync(
         string tokenHash,
         CancellationToken cancellationToken = default);

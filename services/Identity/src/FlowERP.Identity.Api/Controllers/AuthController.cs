@@ -13,7 +13,8 @@ public sealed class AuthController(
     LoginService loginService,
     RefreshTokenService refreshTokenService,
     LogoutService logoutService,
-    ForgotPasswordService forgotPasswordService) : ControllerBase
+    ForgotPasswordService forgotPasswordService,
+    ResetPasswordService resetPasswordService) : ControllerBase
 {
     [HttpPost("login")]
     [ProducesResponseType(
@@ -80,6 +81,22 @@ public sealed class AuthController(
     {
         await logoutService.LogoutAsync(
             request.RefreshToken,
+            cancellationToken);
+
+        return NoContent();
+    }
+
+    [HttpPost("reset-password")]
+    [AllowAnonymous]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> ResetPassword(
+        ResetPasswordRequest request,
+        CancellationToken cancellationToken)
+    {
+        await resetPasswordService.ResetAsync(
+            request.Token,
+            request.NewPassword,
             cancellationToken);
 
         return NoContent();

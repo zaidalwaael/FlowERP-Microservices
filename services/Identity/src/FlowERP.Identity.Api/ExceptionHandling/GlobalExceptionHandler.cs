@@ -1,4 +1,5 @@
 ﻿using FlowERP.Identity.Application.Authentication;
+using FlowERP.Identity.Application.PasswordResetTokens;
 using FlowERP.Identity.Application.Roles;
 using FlowERP.Identity.Application.RolePermissions;
 using FlowERP.Identity.Application.UserRoles;
@@ -69,6 +70,13 @@ public sealed class GlobalExceptionHandler(
             {
                 Status = StatusCodes.Status401Unauthorized,
                 Title = "Invalid credentials",
+                Detail = exception.Message
+            },
+
+            InvalidPasswordResetTokenException => new ProblemDetails
+            {
+                Status = StatusCodes.Status400BadRequest,
+                Title = "Invalid password reset token",
                 Detail = exception.Message
             },
 
