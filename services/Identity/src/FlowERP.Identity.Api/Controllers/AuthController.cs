@@ -4,6 +4,8 @@ using FlowERP.Identity.Application.Authentication;
 using FlowERP.Identity.Application.PasswordResetTokens;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+// Import endpoint rate limiting attributes.
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace FlowERP.Identity.Api.Controllers;
 
@@ -17,6 +19,8 @@ public sealed class AuthController(
     ResetPasswordService resetPasswordService) : ControllerBase
 {
     [HttpPost("login")]
+    [AllowAnonymous]
+    [EnableRateLimiting("auth-login")]
     [ProducesResponseType(
         typeof(TokenResponse),
         StatusCodes.Status200OK)]
@@ -43,6 +47,8 @@ public sealed class AuthController(
     }
 
     [HttpPost("refresh")]
+    [AllowAnonymous]
+    [EnableRateLimiting("auth-refresh")]
     [ProducesResponseType(
         typeof(TokenResponse),
         StatusCodes.Status200OK)]
@@ -88,6 +94,7 @@ public sealed class AuthController(
 
     [HttpPost("reset-password")]
     [AllowAnonymous]
+    [EnableRateLimiting("auth-reset-password")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> ResetPassword(
@@ -105,6 +112,7 @@ public sealed class AuthController(
     // Request a password reset link.
     [HttpPost("forgot-password")]
     [AllowAnonymous]
+    [EnableRateLimiting("auth-forgot-password")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(
         typeof(ValidationProblemDetails),
