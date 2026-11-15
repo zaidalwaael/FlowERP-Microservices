@@ -5,5 +5,7 @@
     <Project Path="src/FlowERP.Identity.Domain/FlowERP.Identity.Domain.csproj" />
     <Project Path="src/FlowERP.Identity.Infrastructure/FlowERP.Identity.Infrastructure.csproj" />
   </Folder>
-  <Project Path="tests/FlowERP.Identity.UnitTests/FlowERP.Identity.UnitTests.csproj" Id="fbdf27a7-d194-49ae-921b-4cfaf0ee488c" />
+  <Folder Name="/tests/">
+    <Project Path="tests/FlowERP.Identity.UnitTests/FlowERP.Identity.UnitTests.csproj" />
+  </Folder>
 </Solution>
